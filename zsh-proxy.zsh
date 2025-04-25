@@ -123,7 +123,21 @@ noproxy() {
 # --- Auto‑run on load? -----------------------------------------------------
 if zstyle -t ':plugin:proxy' auto; then proxy; fi
 
+# --- List proxy environment variables ---------------------------------------
+list_proxy() {
+  echo "http_proxy=$http_proxy"
+  echo "https_proxy=$https_proxy"
+  echo "all_proxy=$all_proxy"
+  echo "no_proxy=$no_proxy"
+  echo "HTTP_PROXY=$HTTP_PROXY"
+  echo "HTTPS_PROXY=$HTTPS_PROXY"
+  echo "ALL_PROXY=$ALL_PROXY"
+  echo "NO_PROXY=$NO_PROXY"
+  echo "git.http.proxy=$(git config --global --get http.proxy)"
+  echo "git.https.proxy=$(git config --global --get https.proxy)"
+}
+
 # --- Export wrappers -------------------------------------------------------
-typeset -f +x proxy noproxy \
+typeset -f +x proxy noproxy list_proxy \
               set_http_proxy set_https_proxy set_socks_proxy set_no_proxy \
               set_git_http_proxy set_git_https_proxy &>/dev/null
