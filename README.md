@@ -37,14 +37,19 @@ git clone https://github.com/huadeity/zsh‑proxy.git ${ZDOTDIR}/plugins/zsh-pro
 echo 'source ${ZDOTDIR}/plugins/zsh-proxy/zsh-proxy.zsh'
 ```
 
-### Antidote
-Add `huadeity/zsh-proxy` to `~/.zsh_plugins.txt`
+### [Antidote](https://antidote.sh)
+`antidote install huadeity/zsh-proxy`
 
-### Zim
-Add `zmodule huadeity/zsh-proxy` to `~/.zimrc` and run `zimfw install`
+### [Zim](https://zimfw.sh)
+`zmodule huadeity/zsh-proxy`
 
-### Oh‑My‑Zsh
+### [Zcomet](https://zcomet.io)
+`zcomet load huadeity/zsh-proxy`
 
+### [Zgenom](https://github.com/jandamm/zgenom)
+`zgenom load huadeity/zsh-proxy`
+
+### [Oh‑My‑Zsh](https://ohmyz.sh)
 ```bash
 # Inside custom plugins dir
 git clone https://github.com/huadeity/zsh‑proxy.git \
