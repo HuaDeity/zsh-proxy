@@ -41,7 +41,10 @@ if [[ "$OSTYPE" == darwin* ]]; then
         print -- "${_proto}://${_ps[Server]}:${_ps[Port]}"
       }
     fi
-    (( $(typeset -f _get_combined_proxy) && $(typeset -f _get_no_proxy) )) && _zsh_proxy_os_funcs_loaded=1
+    if typeset -f _get_combined_proxy >/dev/null && \
+       typeset -f _get_no_proxy >/dev/null; then
+      _zsh_proxy_os_funcs_loaded=1
+    fi
   fi
 fi
 
@@ -82,13 +85,13 @@ set_git_https_proxy() { [[ -n "$1" ]] && _set_git https.proxy "$1" || _unset_git
 # --- Main public entry -----------------------------------------------------
 proxy() {
   local zs_http zs_https zs_socks zs_all zs_no_proxy zs_git_http zs_git_https
-  zstyle -s ':plugin:proxy:'     http_proxy  zs_http
-  zstyle -s ':plugin:proxy:'     https_proxy zs_https
-  zstyle -s ':plugin:proxy:'     socks_proxy zs_socks
-  zstyle -s ':plugin:proxy:'     all_proxy   zs_all
-  zstyle -s ':plugin:proxy:'     no_proxy    zs_no_proxy
-  zstyle -s ':plugin:proxy:git:' http_proxy  zs_git_http
-  zstyle -s ':plugin:proxy:git:' https_proxy zs_git_https
+  zstyle -s ':plugin:proxy'     http_proxy  zs_http
+  zstyle -s ':plugin:proxy'     https_proxy zs_https
+  zstyle -s ':plugin:proxy'     socks_proxy zs_socks
+  zstyle -s ':plugin:proxy'     all_proxy   zs_all
+  zstyle -s ':plugin:proxy'     no_proxy    zs_no_proxy
+  zstyle -s ':plugin:proxy:git' http_proxy  zs_git_http
+  zstyle -s ':plugin:proxy:git' https_proxy zs_git_https
 
   local os_http="" os_https="" os_socks="" os_no=""
   if (( _zsh_proxy_os_funcs_loaded )); then
@@ -118,7 +121,7 @@ noproxy() {
 }
 
 # --- Auto‑run on load? -----------------------------------------------------
-if zstyle -t ':plugin:proxy:' auto; then proxy; fi
+if zstyle -t ':plugin:proxy' auto; then proxy; fi
 
 # --- Export wrappers -------------------------------------------------------
 typeset -f +x proxy noproxy \

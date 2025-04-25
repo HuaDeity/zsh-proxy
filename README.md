@@ -88,16 +88,16 @@ noproxy    # clear everything (env + Git)
 
 ```zsh
 # ~/.zshrc or ~/.zshenv
-zstyle ':plugin:proxy:'        http_proxy   'http://192.168.1.2:7890'
-zstyle ':plugin:proxy:'        https_proxy  'http://192.168.1.2:7890'
-zstyle ':plugin:proxy:'        socks_proxy  'socks5://127.0.0.1:8888'
-zstyle ':plugin:proxy:'        no_proxy     'localhost,127.0.0.1,.internal'
+zstyle ':plugin:proxy'        http_proxy   'http://192.168.1.2:7890'
+zstyle ':plugin:proxy'        https_proxy  'http://192.168.1.2:7890'
+zstyle ':plugin:proxy'        socks_proxy  'socks5://127.0.0.1:8888'
+zstyle ':plugin:proxy'        no_proxy     'localhost,127.0.0.1,.internal'
 
 # Git can use a different endpoint if desired
-zstyle ':plugin:proxy:git:'    http_proxy   'http://git‑proxy.company.com:8080'
+zstyle ':plugin:proxy:git'    http_proxy   'http://git‑proxy.company.com:8080'
 
 # Run automatically on shell startup
-zstyle ':plugin:proxy:'        auto         yes  # default: no
+zstyle ':plugin:proxy'        auto         yes  # default: no
 ```
 
 Call `proxy` manually at any time to reload settings.
