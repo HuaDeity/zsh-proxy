@@ -29,16 +29,23 @@ if [[ "$OSTYPE" == darwin* ]]; then
   local os_func_file="${_zsh_proxy_functions_dir}/osx.zsh"
   if [[ -f "$os_func_file" ]]; then
     source "$os_func_file"
+    local _ns=$(_get_active_network_service); [[ -z "$_ns" ]] && return
     # Shim _get_combined_proxy when absent.
     if ! typeset -f _get_combined_proxy >/dev/null && \
        typeset -f _get_proxy_settings  >/dev/null && \
        typeset -f _get_active_network_service >/dev/null; then
       _get_combined_proxy() {
-        local _kind="$1" _ns="$(_get_active_network_service)"; [[ -z "$_ns" ]] && return
+        local _kind="$1";
         typeset -A _ps; eval "_ps=($(_get_proxy_settings $_kind $_ns))"
         [[ "${_ps[Enabled]}" != "Yes" || -z "${_ps[Server]}" || -z "${_ps[Port]}" ]] && return
         local _proto="http"; [[ "$1" == "socksfirewall" ]] && _proto="socks5"
         print -- "${_proto}://${_ps[Server]}:${_ps[Port]}"
+      }
+    fi
+    if ! typeset -f _get_no_proxy >/dev/null && \
+       typeset -f _get_noproxy >/dev/null; then
+      _get_no_proxy() {
+         _get_noproxy "$_ns"
       }
     fi
     if typeset -f _get_combined_proxy >/dev/null && \

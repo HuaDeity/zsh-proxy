@@ -51,9 +51,9 @@ _get_proxy_settings() {
     _parse_networksetup_output "$proxy_info"
 }
 
-# Get the bypass domain list (no_proxy)
-# Usage: local domains=$(_get_no_proxy 'Wi-Fi')
-_get_no_proxy() {
+# Get the bypass domain list (noproxy)
+# Usage: local domains=$(_get_noproxy 'Wi-Fi')
+_get_noproxy() {
     local network_service="$1"
     local bypass_domains=""
 
@@ -74,4 +74,3 @@ _get_no_proxy() {
 
 # Ensure functions are available if sourced directly (less critical now)
 # typeset -f +x _get_active_network_service _parse_networksetup_output _get_proxy_settings _get_no_proxy &>/dev/null
-
