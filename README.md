@@ -30,37 +30,28 @@ macOS ✓   Linux ✓   WSL ✓   Any system with zsh & Git ✓
 
 ## Installation
 
-### Manual clone
+### Manual
 
 ```bash
-# Pick any directory in $fpath or source manually in ~/.zshrc
-git clone https://github.com/huadeity/zsh‑proxy.git   ~/.zsh/zsh‑proxy
-
-# ~/.zshrc
-source ~/.zsh/zsh‑proxy/zsh‑proxy.zsh
+git clone https://github.com/huadeity/zsh‑proxy.git ${ZDOTDIR}/plugins/zsh-proxy
+echo 'source ${ZDOTDIR}/plugins/zsh-proxy/zsh-proxy.zsh'
 ```
+
+### Antidote
+Add `huadeity/zsh-proxy` to `~/.zsh_plugins.txt`
+
+### Zim
+Add `zmodule huadeity/zsh-proxy` to `~/.zimrc` and run `zimfw install`
 
 ### Oh‑My‑Zsh
 
 ```bash
 # Inside custom plugins dir
-git clone https://github.com/<your‑handle>/zsh‑proxy.git \
-      ${ZSH_CUSTOM:-~/.oh‑my‑zsh/custom}/plugins/zsh‑proxy
+git clone https://github.com/huadeity/zsh‑proxy.git \
+      ${ZSH_CUSTOM:-$HOME/.oh‑my‑zsh/custom}/plugins/zsh‑proxy
 
 # ~/.zshrc
 plugins=( … zsh‑proxy )
-```
-
-### Antigen / Zinit / Other managers
-
-All managers that can *source* or *bundle* a Git repo will work:
-
-```zsh
-# Antigen example
-antigen bundle <your‑handle>/zsh‑proxy
-
-# Zinit example
-zinit light <your‑handle>/zsh‑proxy
 ```
 
 ---
@@ -83,6 +74,7 @@ noproxy    # clear everything (env + Git)
 | `set_no_proxy` LIST    | Set `no_proxy` / `NO_PROXY` (comma‑sep list)                              |
 | `set_git_http_proxy` URI  | `git config --global http.proxy`                                        |
 | `set_git_https_proxy` URI | `git config --global https.proxy`                                       |
+| `list_proxy` | List setting proxy |
 
 ### Sample zstyle config
 
