@@ -84,14 +84,14 @@ set_git_https_proxy() { [[ -n "$1" ]] && _set_git https.proxy "http://$1" || _un
 
 # --- Main public entry -----------------------------------------------------
 proxy() {
-  local zs_http zs_https zs_socks zs_mixed zs_no_proxy zs_git_http zs_git_https
-  zstyle -s ':plugin:proxy'     http_proxy  zs_http
-  zstyle -s ':plugin:proxy'     https_proxy zs_https
-  zstyle -s ':plugin:proxy'     socks_proxy zs_socks
-  zstyle -s ':plugin:proxy'     mixed_proxy zs_mixed
-  zstyle -s ':plugin:proxy'     no_proxy    zs_no_proxy
-  zstyle -s ':plugin:proxy:git' http_proxy  zs_git_http
-  zstyle -s ':plugin:proxy:git' https_proxy zs_git_https
+  local zs_http zs_https zs_socks zs_mixed zs_no zs_git_http zs_git_https
+  zstyle -s ':plugin:proxy'     http  zs_http
+  zstyle -s ':plugin:proxy'     https zs_https
+  zstyle -s ':plugin:proxy'     socks zs_socks
+  zstyle -s ':plugin:proxy'     mixed zs_mixed
+  zstyle -s ':plugin:proxy'     no    zs_no
+  zstyle -s ':plugin:proxy:git' http  zs_git_http
+  zstyle -s ':plugin:proxy:git' https zs_git_https
 
   local os_http="" os_https="" os_socks="" os_no=""
   if (( _zsh_proxy_os_funcs_loaded )); then
@@ -109,7 +109,7 @@ proxy() {
   set_https_proxy "$https_uri"
   set_socks_proxy "$socks_uri"
 
-  set_no_proxy "${zs_no_proxy:-$os_no}"
+  set_no_proxy "${zs_no:-$os_no}"
 
   set_git_http_proxy  "${zs_git_http:-$http_uri}"
   set_git_https_proxy "${zs_git_https:-$https_uri}"
