@@ -38,8 +38,7 @@ if [[ "$OSTYPE" == darwin* ]]; then
         local _kind="$1";
         typeset -A _ps; eval "_ps=($(_get_proxy_settings $_kind $_ns))"
         [[ "${_ps[Enabled]}" != "Yes" || -z "${_ps[Server]}" || -z "${_ps[Port]}" ]] && return
-        local _proto="http"; [[ "$1" == "socksfirewall" ]] && _proto="socks5"
-        print -- "${_proto}://${_ps[Server]}:${_ps[Port]}"
+        print -- "${_ps[Server]}:${_ps[Port]}"
       }
     fi
     if ! typeset -f _get_no_proxy >/dev/null && \
@@ -61,41 +60,35 @@ _set_env() {
   local _var="$1" _val="$2"
   [[ -z "$_val" ]] && return
   export "${_var}=${_val}"
-  case "$_var" in
-    http_proxy)  export HTTP_PROXY="$_val"  ;;
-    https_proxy) export HTTPS_PROXY="$_val" ;;
-    all_proxy)   export ALL_PROXY="$_val"   ;;
-  esac
+  typeset -u _var_upper="$_var"
+  export "${_var_upper}=${_val}"
 }
 
 _unset_env() {
-  unset "$1"
-  case "$1" in
-    http_proxy)  unset HTTP_PROXY  ;;
-    https_proxy) unset HTTPS_PROXY ;;
-    all_proxy)   unset ALL_PROXY   ;;
-    no_proxy)    unset NO_PROXY    ;;
-  esac
+  local _var="$1"
+  unset "$_var"
+  typeset -u _var_upper="$_var"
+  unset "$_var_upper"
 }
 
 _set_git()   { git config --global "$1" "$2" &>/dev/null }
 _unset_git() { git config --global --unset "$1" &>/dev/null || true }
 
 # --- PUBLIC one‑shot setters (toggle behaviour) ---------------------------
-set_http_proxy()  { [[ -n "$1" ]] && _set_env http_proxy  "$1" || _unset_env http_proxy; }
-set_https_proxy() { [[ -n "$1" ]] && _set_env https_proxy "$1" || _unset_env https_proxy; }
-set_socks_proxy() { [[ -n "$1" ]] && _set_env all_proxy   "$1" || _unset_env all_proxy; }
-set_no_proxy()    { [[ -n "$1" ]] && export no_proxy="$1" NO_PROXY="$1" || _unset_env no_proxy; }
-set_git_http_proxy()  { [[ -n "$1" ]] && _set_git http.proxy  "$1" || _unset_git http.proxy; }
-set_git_https_proxy() { [[ -n "$1" ]] && _set_git https.proxy "$1" || _unset_git https.proxy; }
+set_http_proxy()  { [[ -n "$1" ]] && _set_env http_proxy  "http://$1" || _unset_env http_proxy; }
+set_https_proxy() { [[ -n "$1" ]] && _set_env https_proxy "http://$1" || _unset_env https_proxy; }
+set_socks_proxy() { [[ -n "$1" ]] && _set_env all_proxy   "socks5://$1" || _unset_env all_proxy; }
+set_no_proxy()    { [[ -n "$1" ]] && _set_env no_proxy    "$1" || _unset_env no_proxy; }
+set_git_http_proxy()  { [[ -n "$1" ]] && _set_git http.proxy  "http://$1" || _unset_git http.proxy; }
+set_git_https_proxy() { [[ -n "$1" ]] && _set_git https.proxy "http://$1" || _unset_git https.proxy; }
 
 # --- Main public entry -----------------------------------------------------
 proxy() {
-  local zs_http zs_https zs_socks zs_all zs_no_proxy zs_git_http zs_git_https
+  local zs_http zs_https zs_socks zs_mixed zs_no_proxy zs_git_http zs_git_https
   zstyle -s ':plugin:proxy'     http_proxy  zs_http
   zstyle -s ':plugin:proxy'     https_proxy zs_https
   zstyle -s ':plugin:proxy'     socks_proxy zs_socks
-  zstyle -s ':plugin:proxy'     all_proxy   zs_all
+  zstyle -s ':plugin:proxy'     mixed_proxy zs_mixed
   zstyle -s ':plugin:proxy'     no_proxy    zs_no_proxy
   zstyle -s ':plugin:proxy:git' http_proxy  zs_git_http
   zstyle -s ':plugin:proxy:git' https_proxy zs_git_https
@@ -108,9 +101,9 @@ proxy() {
     os_no=$(_get_no_proxy)
   fi
 
-  local http_uri="${zs_http:-${zs_all:-$os_http}}"
-  local https_uri="${zs_https:-${zs_all:-${zs_http:-$os_https}}}"
-  local socks_uri="${zs_socks:-${zs_all:-$os_socks}}"
+  local http_uri="${zs_http:-${zs_mixed:-$os_http}}"
+  local https_uri="${zs_https:-${zs_mixed:-${zs_http:-$os_https}}}"
+  local socks_uri="${zs_socks:-${zs_mixed:-$os_socks}}"
 
   set_http_proxy  "$http_uri"
   set_https_proxy "$https_uri"

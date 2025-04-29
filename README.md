@@ -38,18 +38,23 @@ echo 'source ${ZDOTDIR}/plugins/zsh-proxy/zsh-proxy.zsh'
 ```
 
 ### [Antidote](https://antidote.sh)
+
 `antidote install huadeity/zsh-proxy`
 
 ### [Zim](https://zimfw.sh)
+
 `zmodule huadeity/zsh-proxy`
 
 ### [Zcomet](https://zcomet.io)
+
 `zcomet load huadeity/zsh-proxy`
 
 ### [Zgenom](https://github.com/jandamm/zgenom)
+
 `zgenom load huadeity/zsh-proxy`
 
 ### [Oh‑My‑Zsh](https://ohmyz.sh)
+
 ```bash
 # Inside custom plugins dir
 git clone https://github.com/huadeity/zsh‑proxy.git \
@@ -85,13 +90,14 @@ noproxy    # clear everything (env + Git)
 
 ```zsh
 # ~/.zshrc or ~/.zshenv
-zstyle ':plugin:proxy'        http_proxy   'http://192.168.1.2:7890'
-zstyle ':plugin:proxy'        https_proxy  'http://192.168.1.2:7890'
-zstyle ':plugin:proxy'        socks_proxy  'socks5://127.0.0.1:8888'
+zstyle ':plugin:proxy'        http_proxy   '192.168.1.2:7890'
+zstyle ':plugin:proxy'        https_proxy  '192.168.1.2:7890'
+zstyle ':plugin:proxy'        socks_proxy  '127.0.0.1:8888'
 zstyle ':plugin:proxy'        no_proxy     'localhost,127.0.0.1,.internal'
 
 # Git can use a different endpoint if desired
-zstyle ':plugin:proxy:git'    http_proxy   'http://git‑proxy.company.com:8080'
+zstyle ':plugin:proxy:git'    http_proxy   'git‑proxy.company.com:8080'
+zstyle ':plugin:proxy:git'    https_proxy   'git‑proxy.company.com:8080'
 
 # Run automatically on shell startup
 zstyle ':plugin:proxy'        auto         yes  # default: no
