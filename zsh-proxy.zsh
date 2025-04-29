@@ -19,37 +19,37 @@
 typeset -g _zsh_proxy_plugin_dir=${0:A:h}
 typeset -g _zsh_proxy_functions_dir="${_zsh_proxy_plugin_dir}/functions"
 
-# --- OS helper sourcing ----------------------------------------------------
-
 typeset -g _zsh_proxy_os_funcs_loaded=0
-typeset -g _zsh_proxy_os_type="unknown"
 
-if [[ "$OSTYPE" == darwin* ]]; then
-  _zsh_proxy_os_type="osx"
-  local os_func_file="${_zsh_proxy_functions_dir}/osx.zsh"
-  if [[ -f "$os_func_file" ]]; then
-    source "$os_func_file"
-    local _ns=$(_get_active_network_service); [[ -z "$_ns" ]] && return
-    # Shim _get_combined_proxy when absent.
-    if ! typeset -f _get_combined_proxy >/dev/null && \
-       typeset -f _get_proxy_settings  >/dev/null && \
-       typeset -f _get_active_network_service >/dev/null; then
-      _get_combined_proxy() {
-        local _kind="$1";
-        typeset -A _ps; eval "_ps=($(_get_proxy_settings $_kind $_ns))"
-        [[ "${_ps[Enabled]}" != "Yes" || -z "${_ps[Server]}" || -z "${_ps[Port]}" ]] && return
-        print -- "${_ps[Server]}:${_ps[Port]}"
-      }
-    fi
-    if ! typeset -f _get_no_proxy >/dev/null && \
-       typeset -f _get_noproxy >/dev/null; then
-      _get_no_proxy() {
-         _get_noproxy "$_ns"
-      }
-    fi
-    if typeset -f _get_combined_proxy >/dev/null && \
-       typeset -f _get_no_proxy >/dev/null; then
-      _zsh_proxy_os_funcs_loaded=1
+# --- Auto‑run on load? -----------------------------------------------------
+if zstyle -t ':plugin:proxy' auto; then
+  # --- OS helper sourcing ----------------------------------------------------
+  if [[ "$OSTYPE" == darwin* ]]; then
+    local os_func_file="${_zsh_proxy_functions_dir}/osx.zsh"
+    if [[ -f "$os_func_file" ]]; then
+      source "$os_func_file"
+      local _ns=$(_get_active_network_service); [[ -z "$_ns" ]] && return
+      # Shim _get_combined_proxy when absent.
+      if ! typeset -f _get_combined_proxy >/dev/null && \
+        typeset -f _get_proxy_settings  >/dev/null && \
+        typeset -f _get_active_network_service >/dev/null; then
+        _get_combined_proxy() {
+          local _kind="$1";
+          typeset -A _ps; eval "_ps=($(_get_proxy_settings $_kind $_ns))"
+          [[ "${_ps[Enabled]}" != "Yes" || -z "${_ps[Server]}" || -z "${_ps[Port]}" ]] && return
+          print -- "${_ps[Server]}:${_ps[Port]}"
+        }
+      fi
+      if ! typeset -f _get_no_proxy >/dev/null && \
+        typeset -f _get_noproxy >/dev/null; then
+        _get_no_proxy() {
+          _get_noproxy "$_ns"
+        }
+      fi
+      if typeset -f _get_combined_proxy >/dev/null && \
+        typeset -f _get_no_proxy >/dev/null; then
+        _zsh_proxy_os_funcs_loaded=1
+      fi
     fi
   fi
 fi
@@ -93,7 +93,8 @@ proxy() {
   zstyle -s ':plugin:proxy:git' http  zs_git_http
   zstyle -s ':plugin:proxy:git' https zs_git_https
 
-  local os_http="" os_https="" os_socks="" os_no=""
+  local os_http os_https os_socks os_no
+  
   if (( _zsh_proxy_os_funcs_loaded )); then
     os_http=$(_get_combined_proxy web)
     os_https=$(_get_combined_proxy secureweb)
@@ -120,8 +121,7 @@ noproxy() {
   _unset_git http.proxy https.proxy
 }
 
-# --- Auto‑run on load? -----------------------------------------------------
-if zstyle -t ':plugin:proxy' auto; then proxy; fi
+proxy
 
 # --- List proxy environment variables ---------------------------------------
 list_proxy() {
