@@ -112,7 +112,7 @@ proxy() {
 
   set_no_proxy "${zs_no:-$os_no}"
 
-  if ztyle -t ':plugin:proxy:git' auto; then
+  if zstyle -t ':plugin:proxy:git' auto; then
     set_git_http_proxy  "${zs_git_http:-$http_uri}"
     set_git_https_proxy "${zs_git_https:-$https_uri}"
   fi
