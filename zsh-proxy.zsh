@@ -112,13 +112,19 @@ proxy() {
 
   set_no_proxy "${zs_no:-$os_no}"
 
-  set_git_http_proxy  "${zs_git_http:-$http_uri}"
-  set_git_https_proxy "${zs_git_https:-$https_uri}"
+  if ztyle -t ':plugin:proxy:git' auto; then
+    set_git_http_proxy  "${zs_git_http:-$http_uri}"
+    set_git_https_proxy "${zs_git_https:-$https_uri}"
+  fi
 }
 
 noproxy() {
-  _unset_env http_proxy https_proxy all_proxy no_proxy
-  _unset_git http.proxy https.proxy
+  _unset_env http_proxy
+  _unset_env https_proxy
+  _unset_env all_proxy
+  _unset_env no_proxy
+  _unset_git http.proxy
+  _unset_git https.proxy
 }
 
 proxy
