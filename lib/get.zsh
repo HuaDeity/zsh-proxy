@@ -10,9 +10,13 @@ fi
 
 _zsh_proxy_get_proxy() {
   local type="$1"
-  local os_proxy zs_proxy proxy
+  local os_proxy zs_proxy mixed_proxy proxy
   typeset -f _get_combined_proxy >/dev/null && os_proxy="$(_get_combined_proxy "$type")"
   zstyle -s ':plugin:proxy' $type zs_proxy
+  zstyle -s ':plugin:proxy' 'mixed' mixed_proxy
+  if [[ $type != "no" ]]; then
+    zs_proxy=${zs_proxy:-$mixed_proxy}
+  fi
   proxy=${zs_proxy:-$os_proxy}
 
   if [[ $type != "no" && -n $proxy ]]; then

@@ -69,22 +69,17 @@ plugins=( ... zsh-proxy )
 ## Quick start
 
 ```zsh
-proxy     # auto-configure from zstyle → OS → unset fallback
+proxy     # auto-configure from zstyle → OS
 noproxy   # clear everything (env + Git)
+proxys    # Show all proxy settings
 ```
 
 ### Manual setters (toggle)
 
 | Function               | Action                                                  |
 |-----------------------|---------------------------------------------------------|
-| `set_http_proxy` URI  | Set `http_proxy` / `HTTP_PROXY`                        |
-| **(call with no arg)**| Unset them                                             |
-| `set_https_proxy` URI | Set `https_proxy` / `HTTPS_PROXY`                      |
-| `set_socks_proxy` URI | Set `all_proxy` / `ALL_PROXY` (expects `socks5://…`)   |
-| `set_no_proxy` LIST   | Set `no_proxy` / `NO_PROXY` (comma-separated list)     |
-| `set_git_http_proxy` URI  | `git config --global http.proxy`                   |
-| `set_git_https_proxy` URI | `git config --global https.proxy`                 |
-| `list_proxy` | List setting proxy |
+| `set_proxy` PLUGIN TYPE PROXY | Set proxy for specifig app with specifig protocal type |
+| `unset_proxy` PLUGIN TYPE | Unset proxy for specifig app with specifig protocal type |
 
 ### Sample zstyle config
 
@@ -96,12 +91,11 @@ zstyle ':plugin:proxy'        socks   '127.0.0.1:8888'
 zstyle ':plugin:proxy'        mixed   '127.0.0.1:8888'
 zstyle ':plugin:proxy'        no      'localhost,127.0.0.1,.internal'
 
-# Git can use a different endpoint if desired
-zstyle ':plugin:proxy:git'    http    'git-proxy.company.com:8080'
-zstyle ':plugin:proxy:git'    https   'git-proxy.company.com:8080'
+zstyle ':plugin:proxy'        type    http https all no # default
+zstyle ':plugin:proxy'        plugins shells            # default
 
 # Run automatically on shell startup
-zstyle ':plugin:proxy'        auto         yes   # default: no
+zstyle ':plugin:proxy'        auto         yes          # default: no
 ```
 
 Call `proxy` manually at any time to reload settings.
